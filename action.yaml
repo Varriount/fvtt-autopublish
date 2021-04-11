@@ -1,0 +1,55 @@
+name: 'FoundryVTT AutoPublish'
+description: 'Publishes a new FoundryVTT module version to the FoundryVTT module administration site.'
+inputs:
+  username:
+    required: true
+    description: |
+      The username of the account that will be used to access the FoundryVTT
+        module administration site.
+
+  password:
+    required: true
+    description: |
+       The source that the password of the account that will be used to access
+        the site will be read from.
+
+  module-id:
+    required: true
+    description: |
+      The numeric ID of the module to publish a new version of.
+
+  manifest-url:
+    required: true
+    description: |
+      The manifest URL for the specific module version being published.
+
+  manifest-file:
+    required: true
+    description: |
+      Path of a module manifest file to read information from.
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        import os, shlex, subprocess
+
+        run = lambda command: subprocess.run([
+          arg.format(**os.environ) for arg in shlex.split(command)
+        ], *args, **kwargs)
+
+        run("pip install poetry")
+        run("cd ${{ github.action_path }})
+        run("poetry install")
+        run(
+          """
+            poetry run fvtt-autopublish
+              --username        "{ username      }"
+              --password-source "input"
+              --module-id       "{ module-id     }"
+              --manifest-url    "{ manifest-url  }"
+              --manifest-file   "{ manifest-file }"
+          """,
+          input=os.environ['password']
+        )
+      shell: python
