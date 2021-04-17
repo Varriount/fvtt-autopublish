@@ -39,7 +39,7 @@ runs:
         ], *args, **kwargs)
 
         run("pip install poetry")
-        run("cd ${{ github.action_path }})
+        run("cd ${{ github.action_path }}")
         run("poetry install")
         run(
           """
