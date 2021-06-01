@@ -53,8 +53,8 @@ runs:
               --manifest-url    "{INPUT_MANIFEST_URL}"
               --manifest-file   "{INPUT_MANIFEST_FILE}"
             """,
+            cwd="${{ github.action_path }}",
             input="{INPUT_PASSWORD}",
-            text=True
         )
       shell: python
       env:
