@@ -53,6 +53,6 @@ runs:
               --manifest-url    "{ manifest-url  }"
               --manifest-file   "{ manifest-file }"
             """,
-            input=os.environ['password']
+            input="{ password }"
         )
       shell: python
