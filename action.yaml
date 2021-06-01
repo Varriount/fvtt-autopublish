@@ -33,7 +33,7 @@ runs:
   steps:
     - run: |
         import os, shlex, subprocess
-
+        print(os.environ.keys())
         def run(command, *args, **kwargs):
             subprocess.run([
               part.format(**os.environ) for part in shlex.split(command)
