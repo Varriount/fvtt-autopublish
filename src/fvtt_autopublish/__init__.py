@@ -223,6 +223,14 @@ def main(
         **kwargs
 ):
     new_version_data = {}
+
+    # Read in manifest data, if given.
+    if manifest_url is not None:
+        manifest_data = read_manifest(manifest_file)
+        for manifest_key, form_key in MANIFEST_KEY_TO_FORM_KEY_MAP.items():
+            new_version_data[form_key] = manifest_data[manifest_key]
+
+    # Apply CLI data, if given
     for manifest_key, form_key in MANIFEST_KEY_TO_FORM_KEY_MAP.items():
         cli_key = manifest_key.replace('-', '_')
         cli_value = kwargs.get(cli_key)
@@ -230,12 +238,6 @@ def main(
             continue
         
         new_version_data[form_key] = kwargs[cli_key.replace('-', '_')]
-
-    # Read in manifest data, if given.
-    if manifest_url is not None:
-        manifest_data = read_manifest(manifest_file)
-        for manifest_key, form_key in MANIFEST_KEY_TO_FORM_KEY_MAP.items():
-            new_version_data.setdefault(form_key, manifest_data[manifest_key])
 
     # Read in password
     try:
