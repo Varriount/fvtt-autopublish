@@ -33,8 +33,10 @@ runs:
   steps:
     - run: |
         import os, shlex, subprocess
-        print(os.environ.keys())
+
         def run(command, *args, **kwargs):
+            kwargs.setdefault("text", True)
+            kwargs.setdefault("check", True)
             subprocess.run([
               part.format(**os.environ) for part in shlex.split(command)
             ], *args, **kwargs)
@@ -53,12 +55,13 @@ runs:
               --manifest-url    "{INPUT_MANIFEST_URL}"
               --manifest-file   "{INPUT_MANIFEST_FILE}"
             """,
-            input="{INPUT_PASSWORD}"
+            input="{INPUT_PASSWORD}",
+            text=True
         )
       shell: python
       env:
-        INPUT_USERNAME: ${{ inputs.username }}
-        INPUT_PASSWORD: ${{ inputs.password }}
+        INPUT_USERNAME: ${{ secrets.username }}
+        INPUT_PASSWORD: ${{ secrets.password }}
         INPUT_MODULE_ID: ${{ inputs.module-id }}
         INPUT_MANIFEST_URL: ${{ inputs.manifest-url }}
         INPUT_MANIFEST_FILE: ${{ inputs.manifest-file }}
