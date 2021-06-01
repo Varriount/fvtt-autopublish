@@ -41,8 +41,8 @@ runs:
 
         run("pip install poetry")
         run(
-            "poetry install"
-            cwd="${{ github.action_path }}"
+            "poetry install",
+            cwd="${{ github.action_path }}",
         )
         run(
             """
