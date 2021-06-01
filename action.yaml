@@ -34,9 +34,10 @@ runs:
     - run: |
         import os, shlex, subprocess
 
-        run = lambda command: subprocess.run([
-          arg.format(**os.environ) for arg in shlex.split(command)
-        ], *args, **kwargs)
+        def run(command, *args, **kwargs):
+            subprocess.run([
+              part.format(**os.environ) for part in shlex.split(command)
+            ], *args, **kwargs)
 
         run("pip install poetry")
         run("cd ${{ github.action_path }}")
