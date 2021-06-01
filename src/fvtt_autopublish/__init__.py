@@ -17,8 +17,8 @@ from mechanize import FormNotFoundError
 MAX_VERSION_COUNT = 1000
 
 ADMIN_URL = 'foundryvtt.com/admin'
-LOGIN_URL_FMT = 'https://{admin_url}/login/'
-MODULE_CONFIG_URL_FMT = 'https://{admin_url}/packages/package/{module_id}/change/'
+LOGIN_URL = f'https://{ADMIN_URL}/login/'
+MODULE_CONFIG_URL_FMT = f'https://{ADMIN_URL}/packages/package/{{module_id}}/change/'
 
 PASSWORD_ENV_VARIABLE = "FVTT_PASSWORD"
 
@@ -255,7 +255,7 @@ def main(
 
     # ## Login ## #
     # Navigate to module administration site's login page.
-    br.open(LOGIN_URL_FMT.format(admin_url=ADMIN_URL))
+    br.open(LOGIN_URL)
 
     # Select and fill out the "login" form.
     br.select_form(id='login-form')
@@ -264,7 +264,7 @@ def main(
 
     # ## Configuration page ## #
     # Navigate to configuration page.
-    br.open(MODULE_CONFIG_URL_FMT.format(admin_url=ADMIN_URL, module_id=module_id))
+    resp = br.open(MODULE_CONFIG_URL_FMT.format(module_id=module_id))
 
     # Select and fill out the "module versions" form.
     try:
@@ -274,7 +274,7 @@ def main(
         print('Unable to find package configuration form.', file=sys.stderr)
         print('Are login credentials correct?', file=sys.stderr)
         print('Page content:', file=sys.stderr)
-        print(re.sub(f'\n{2,}', '\n', page_content))
+        print(re.sub(r'\n{2,}', '\n', page_content))
     fill_out_version_form(br, new_version_data)
     br.submit()
 
