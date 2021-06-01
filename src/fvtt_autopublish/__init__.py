@@ -12,6 +12,8 @@ import mechanize
 from click import Choice, Command, BadParameter
 
 # Constants
+from mechanize import FormNotFoundError
+
 MAX_VERSION_COUNT = 1000
 
 ADMIN_URL = 'foundryvtt.com/admin'
@@ -265,7 +267,14 @@ def main(
     br.open(MODULE_CONFIG_URL_FMT.format(admin_url=ADMIN_URL, module_id=module_id))
 
     # Select and fill out the "module versions" form.
-    br.select_form(id='package_form')
+    try:
+        br.select_form(id='package_form')
+    except FormNotFoundError:
+        page_content = br.response().read().decode("utf8")
+        print('Unable to find package configuration form.', file=sys.stderr)
+        print('Are login credentials correct?', file=sys.stderr)
+        print('Page content:', file=sys.stderr)
+        print(re.sub(f'\n{2,}', '\n', page_content))
     fill_out_version_form(br, new_version_data)
     br.submit()
 
