@@ -50,7 +50,7 @@ runs:
               --manifest-url    "{INPUT_MANIFEST_URL}"
               --manifest-file   "{INPUT_MANIFEST_FILE}"
             """,
-            input="{INPUT_PASSWORD}",
+            input=os.environ["INPUT_PASSWORD"],
         )
       shell: python
       working-directory: ${{ github.action_path }}
