@@ -21,10 +21,10 @@ MODULE_CONFIG_URL_FMT = 'https://{admin_url}/packages/package/{module_id}/change
 PASSWORD_ENV_VARIABLE = "FVTT_PASSWORD"
 
 MANIFEST_KEY_TO_FORM_KEY_MAP = {
-    'module-version': 'version',
-    'changelog-url': 'changelog',
-    'minimum-core-version': 'minimumCoreVersion',
-    'compatible-core-version': 'compatibleCoreVersion',
+    'version': 'module-version',
+    'changelog': 'changelog-url',
+    'minimumCoreVersion': 'minimum-core-version',
+    'compatibleCoreVersion': 'compatible-core-version',
 }
 
 CLI_KEY_TO_FORM_KEY_MAP = MANIFEST_KEY_TO_FORM_KEY_MAP
