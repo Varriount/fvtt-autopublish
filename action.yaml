@@ -56,3 +56,9 @@ runs:
             input="{INPUT_PASSWORD}"
         )
       shell: python
+      env:
+        INPUT_USERNAME: ${{ inputs.username }}
+        INPUT_PASSWORD: ${{ inputs.password }}
+        INPUT_MODULE_ID: ${{ inputs.module-id }}
+        INPUT_MANIFEST_URL: ${{ inputs.manifest-url }}
+        INPUT_MANIFEST_FILE: ${{ inputs.manifest-file }}
