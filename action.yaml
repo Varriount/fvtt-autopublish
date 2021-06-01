@@ -31,7 +31,7 @@ runs:
   steps:
     - run: |
         import os, shlex, subprocess
-
+        print(os.getcwd())
         def run(command, *args, **kwargs):
             kwargs.setdefault("text", True)
             kwargs.setdefault("check", True)
@@ -53,7 +53,6 @@ runs:
             input="{INPUT_PASSWORD}",
         )
       shell: python
-      working-directory: ${{ github.action_path }}
       env:
         INPUT_USERNAME: ${{ inputs.username }}
         INPUT_PASSWORD: ${{ inputs.password }}
