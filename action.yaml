@@ -40,17 +40,19 @@ runs:
             ], *args, **kwargs)
 
         run("pip install poetry")
-        run("cd ${{ github.action_path }}")
-        run("poetry install")
         run(
-          """
+            "poetry install"
+            cwd="${{ github.action_path }}"
+        )
+        run(
+            """
             poetry run fvtt-autopublish
               --username        "{ username      }"
               --password-source "input"
               --module-id       "{ module-id     }"
               --manifest-url    "{ manifest-url  }"
               --manifest-file   "{ manifest-file }"
-          """,
-          input=os.environ['password']
+            """,
+            input=os.environ['password']
         )
       shell: python
