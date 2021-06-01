@@ -223,7 +223,12 @@ def main(
         **kwargs
 ):
     new_version_data = {}
-    for cli_key, form_key in CLI_KEY_TO_FORM_KEY_MAP.items():
+    for manifest_key, form_key in MANIFEST_KEY_TO_FORM_KEY_MAP.items():
+        cli_key = manifest_key.replace('-', '_')
+        cli_value = kwargs.get(cli_key)
+        if cli_value is None:
+            continue
+        
         new_version_data[form_key] = kwargs[cli_key.replace('-', '_')]
 
     # Read in manifest data, if given.
