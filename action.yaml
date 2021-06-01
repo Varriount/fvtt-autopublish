@@ -47,12 +47,12 @@ runs:
         run(
             """
             poetry run fvtt-autopublish
-              --username        "{ username      }"
+              --username        "{username}"
               --password-source "input"
-              --module-id       "{ module-id     }"
-              --manifest-url    "{ manifest-url  }"
-              --manifest-file   "{ manifest-file }"
+              --module-id       "{module-id}"
+              --manifest-url    "{manifest-url}"
+              --manifest-file   "{manifest-file}"
             """,
-            input="{ password }"
+            input="{password}"
         )
       shell: python
