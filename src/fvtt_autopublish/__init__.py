@@ -23,14 +23,21 @@ MODULE_CONFIG_URL_FMT = f'https://{ADMIN_URL}/packages/package/{{module_id}}/cha
 PASSWORD_ENV_VARIABLE = "FVTT_PASSWORD"
 
 MANIFEST_KEY_TO_FORM_KEY_MAP = {
-    'version': 'module-version',
-    'changelog': 'changelog-url',
-    'minimumCoreVersion': 'minimum-core-version',
-    'compatibleCoreVersion': 'compatible-core-version',
+    'version': 'version',
+    # We don't use manifest here, as the manifest URL in the manifest is not
+    # the one we want.
+    'changelog': 'notes',
+    'minimumCoreVersion': 'required_core_version',
+    'compatibleCoreVersion': 'compatible_core_version',
 }
 
-CLI_KEY_TO_FORM_KEY_MAP = MANIFEST_KEY_TO_FORM_KEY_MAP
-
+CLI_KEY_TO_FORM_KEY_MAP = {
+    'module_version': 'version',
+    'manifest_url': 'manifest',
+    'changelog': 'notes',
+    'minimum_core_version': 'required_core_version',
+    'compatible_core_version': 'compatible_core_version',
+}
 
 # Extend Help Formatting
 class ExtCommand(Command):
@@ -220,26 +227,24 @@ def main(
         username: str,
         password_source: str,
         module_id: int,
-        manifest_url: str,
         manifest_file: str,
         **kwargs
 ):
     new_version_data = {}
 
     # Read in manifest data, if given.
-    if manifest_url is not None:
+    if manifest_file is not None:
         manifest_data = read_manifest(manifest_file)
         for manifest_key, form_key in MANIFEST_KEY_TO_FORM_KEY_MAP.items():
             new_version_data[form_key] = manifest_data[manifest_key]
 
     # Apply CLI data, if given
-    for manifest_key, form_key in MANIFEST_KEY_TO_FORM_KEY_MAP.items():
-        cli_key = manifest_key.replace('-', '_')
+    for cli_key, form_key in CLI_KEY_TO_FORM_KEY_MAP.items():
         cli_value = kwargs.get(cli_key)
         if cli_value is None:
             continue
         
-        new_version_data[form_key] = kwargs[cli_key.replace('-', '_')]
+        new_version_data[form_key] = kwargs[cli_key]
 
     # Read in password
     try:
@@ -277,7 +282,8 @@ def main(
         print(re.sub(r'\n{2,}', '\n', page_content))
     fill_out_version_form(br, new_version_data)
     br.submit()
-
+    page_content = br.response().read().decode("utf8")
+    print(re.sub(r'\n{2,}', '\n', page_content))
 
 def fill_out_login_form(br, username: str, password: str):
     br['username'] = username
@@ -298,7 +304,7 @@ def fill_out_version_form(br, new_version_data: Dict):
     # using the pattern "id_versions-{version_index}-{field_name}".
     # We define some helpers here for abstracting over this pattern.
     def versioned_field_name_for(field_name: str, version_index: int):
-        return f'id_versions-{version_index}-{field_name}'
+        return f'versions-{version_index}-{field_name}'
 
     # Check the boxes of versions that should be removed.
     # Note the `range` function, when given a single argument `X`, generates
