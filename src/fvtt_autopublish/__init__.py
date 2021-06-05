@@ -295,10 +295,10 @@ def fill_out_version_form(br, new_version_data: Dict):
     new_version_index = version_count - 1
 
     # The configuration page represents the forms for each version's fields
-    # using the pattern "versions-{version_index}-{field_name}".
+    # using the pattern "id_versions-{version_index}-{field_name}".
     # We define some helpers here for abstracting over this pattern.
     def versioned_field_name_for(field_name: str, version_index: int):
-        return f'versions-{version_index}-{field_name}'
+        return f'id_versions-{version_index}-{field_name}'
 
     # Check the boxes of versions that should be removed.
     # Note the `range` function, when given a single argument `X`, generates
