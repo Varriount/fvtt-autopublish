@@ -31,7 +31,6 @@ runs:
   steps:
     - run: |
         import os, shlex, subprocess
-        print(list(os.environ.keys()))
         def run(command, *args, **kwargs):
             kwargs.setdefault("text", True)
             kwargs.setdefault("check", True)
