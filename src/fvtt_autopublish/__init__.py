@@ -344,6 +344,8 @@ def read_password(method: str) -> Optional[str]:
     elif method == "environment":
         result = os.environ.get(PASSWORD_ENV_VARIABLE)
         if result is None:
-            raise ValueError("Unable to read password: Environment variable ")
+            raise ValueError("Unable to read password: Environment variable")
+        else:
+            return result
     else:
         raise ValueError(f"Invalid method: {method}")
