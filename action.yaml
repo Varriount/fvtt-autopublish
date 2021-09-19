@@ -47,7 +47,7 @@ runs:
             """
             poetry run fvtt-autopublish
               --username        "{INPUT_USERNAME}"
-              --password-source "input"
+              --password-source "raw-input"
               --module-id       "{INPUT_MODULE_ID}"
               --manifest-url    "{INPUT_MANIFEST_URL}"
               --manifest-file   "{INPUT_MANIFEST_FILE}"
