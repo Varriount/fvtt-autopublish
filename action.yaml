@@ -1,5 +1,8 @@
 name: 'FoundryVTT AutoPublish'
 description: 'Publishes a new FoundryVTT module version to the FoundryVTT module administration site.'
+branding:
+  icon: upload
+  color: gray-dark
 inputs:
   username:
     required: true
