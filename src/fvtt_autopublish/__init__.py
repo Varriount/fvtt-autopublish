@@ -118,7 +118,7 @@ class ExtCommand(Command):
         |||
     """,
     required=True,
-    type=Choice(['environment', 'input'], case_sensitive=False),
+    type=Choice(['environment', 'input', 'raw-input'], case_sensitive=False),
     default='input'
 )
 @click.option(
