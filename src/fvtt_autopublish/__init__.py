@@ -256,7 +256,7 @@ def main(
     except ValueError as exc:
         raise BadParameter("Couldn't read password: " + str(exc))
     if len(password) == 0:
-        print('Warning: Supplied password was empty.', file=sys.stderr)
+        print('Warning: Supplied password was empty!', file=sys.stderr)
 
     # Now that all the data we require has been gathered, start by initializing
     # the browser object and logging in.
@@ -339,6 +339,8 @@ def read_manifest(file_path: str) -> Dict[Any, Any]:
 
 
 def read_password(method: str) -> Optional[str]:
+    if method == "raw-input":
+        return sys.stdin.read()
     if method == "input":
         return getpass()
     elif method == "environment":
