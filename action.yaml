@@ -44,4 +44,4 @@ runs:
     FVTT_PASSWORD: ${{ inputs.password }}
     FVTT_MODULE_ID: ${{ inputs.module-id }}
     FVTT_MANIFEST_URL: ${{ inputs.manifest-url }}
-    FVTT_MANIFEST_FILE: ${{github.workspace}}/${{ inputs.manifest-file }}
+    FVTT_MANIFEST_FILE: ${{ inputs.manifest-file }}
