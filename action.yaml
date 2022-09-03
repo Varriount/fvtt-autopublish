@@ -33,15 +33,15 @@ runs:
   using: "docker"
   image: 'Dockerfile'
   args: [
-    "--username",        "{INPUT_USERNAME}",
-    "--password-source", "environment:INPUT_PASSWORD",
-    "--module-id",       "{INPUT_MODULE_ID}",
-    "--manifest-url",    "{INPUT_MANIFEST_URL}",
-    "--manifest-file",   "{INPUT_MANIFEST_FILE}",
+    "--username",        "{FVTT_USERNAME}",
+    "--password-source", "environment",
+    "--module-id",       "{FVTT_MODULE_ID}",
+    "--manifest-url",    "{FVTT_MANIFEST_URL}",
+    "--manifest-file",   "{FVTT_MANIFEST_FILE}",
   ]
   env:
-    INPUT_USERNAME: ${{ inputs.username }}
-    INPUT_PASSWORD: ${{ inputs.password }}
-    INPUT_MODULE_ID: ${{ inputs.module-id }}
-    INPUT_MANIFEST_URL: ${{ inputs.manifest-url }}
-    INPUT_MANIFEST_FILE: ${{github.workspace}}/${{ inputs.manifest-file }}
+    FVTT_USERNAME: ${{ inputs.username }}
+    FVTT_PASSWORD: ${{ inputs.password }}
+    FVTT_MODULE_ID: ${{ inputs.module-id }}
+    FVTT_MANIFEST_URL: ${{ inputs.manifest-url }}
+    FVTT_MANIFEST_FILE: ${{github.workspace}}/${{ inputs.manifest-file }}
