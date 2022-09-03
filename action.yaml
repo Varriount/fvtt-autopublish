@@ -30,35 +30,18 @@ inputs:
       Path of a module manifest file to read information from.
 
 runs:
-  using: "composite"
-  steps:
-    - run: |
-        import os, shlex, subprocess
-        def run(command, *args, **kwargs):
-            kwargs.setdefault("text", True)
-            kwargs.setdefault("check", True)
-            subprocess.run([
-              part.format(**os.environ) for part in shlex.split(command)
-            ], *args, **kwargs)
-
-        run("pip install poetry")
-        run("poetry install")
-        run(
-            """
-            poetry run fvtt-autopublish
-              --username        "{INPUT_USERNAME}"
-              --password-source "raw-input"
-              --module-id       "{INPUT_MODULE_ID}"
-              --manifest-url    "{INPUT_MANIFEST_URL}"
-              --manifest-file   "{INPUT_MANIFEST_FILE}"
-            """,
-            input=os.environ["INPUT_PASSWORD"],
-        )
-      shell: python
-      working-directory: ${{ github.action_path }}
-      env:
-        INPUT_USERNAME: ${{ inputs.username }}
-        INPUT_PASSWORD: ${{ inputs.password }}
-        INPUT_MODULE_ID: ${{ inputs.module-id }}
-        INPUT_MANIFEST_URL: ${{ inputs.manifest-url }}
-        INPUT_MANIFEST_FILE: ${{github.workspace}}/${{ inputs.manifest-file }}
+  using: "docker"
+  image: 'Dockerfile'
+  args: [
+    "--username",        "{INPUT_USERNAME}",
+    "--password-source", "environment:INPUT_PASSWORD",
+    "--module-id",       "{INPUT_MODULE_ID}",
+    "--manifest-url",    "{INPUT_MANIFEST_URL}",
+    "--manifest-file",   "{INPUT_MANIFEST_FILE}",
+  ]
+  env:
+    INPUT_USERNAME: ${{ inputs.username }}
+    INPUT_PASSWORD: ${{ inputs.password }}
+    INPUT_MODULE_ID: ${{ inputs.module-id }}
+    INPUT_MANIFEST_URL: ${{ inputs.manifest-url }}
+    INPUT_MANIFEST_FILE: ${{github.workspace}}/${{ inputs.manifest-file }}
