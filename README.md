@@ -1,4 +1,4 @@
-# fvtt-autopublish
+# FoundryVTT AutoPublish
 A tool & Github Action to automatically publish new versions of a FoundryVTT package to foundryvtt.com
 
 # Using as a Tool
