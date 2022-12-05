@@ -5,15 +5,15 @@ import os
 import re
 import sys
 from getpass import getpass
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional, Mapping, Sequence
 
 import click
-import mechanize
 from click import Choice, Command, BadParameter
-
-# Constants
+import mechanize
 from mechanize import FormNotFoundError
 
+
+# Constants
 MAX_VERSION_COUNT = 1000
 
 ADMIN_URL = 'foundryvtt.com/admin'
