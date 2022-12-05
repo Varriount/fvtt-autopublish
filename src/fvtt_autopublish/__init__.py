@@ -251,11 +251,11 @@ def main(
             if form_key in new_version_data:
                 continue
 
-            manifest_value = manifest_data
-            for segment in manifest_key.split('.'):
-                manifest_value = manifest_value[segment]
+            manifest_value = get_item_from_path(manifest_data, manifest_key)
+            if manifest_value is None:
+                continue
 
-            new_version_data[form_key] = manifest_data[manifest_key]
+            new_version_data[form_key] = manifest_value
 
     # Read in password
     try:
@@ -349,9 +349,9 @@ def get_item_from_path(container, path):
             partial_path = str.join('.', components[0:index])
             raise ValueError(f"Unexpected string at {partial_path} (full path: {path})")
         if isinstance(value, Sequence):
-            value = value[int(component)]
+            raise ValueError(f"Unexpected list at {partial_path} (full path: {path})")
         else:
-            value = value[component]
+            value = value.get(component)
     return value
 
 
