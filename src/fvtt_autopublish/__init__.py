@@ -29,14 +29,16 @@ MANIFEST_KEY_TO_FORM_KEY_MAP = {
     'changelog': 'notes',
     'minimumCoreVersion': 'required_core_version',
     'compatibleCoreVersion': 'compatible_core_version',
+    'compatibility.minimum': 'required_core_version',
+    'compatibility.verified': 'compatible_core_version',
 }
 
 CLI_KEY_TO_FORM_KEY_MAP = {
     'module_version': 'version',
     'manifest_url': 'manifest',
     'changelog': 'notes',
-    'minimum_core_version': 'required_core_version',
-    'compatible_core_version': 'compatible_core_version',
+    'minimum_core_version': ['required_core_version'],
+    'compatible_core_version': ['compatible_core_version'],
 }
 
 # Extend Help Formatting
@@ -237,16 +239,21 @@ def main(
         cli_value = kwargs.get(cli_key)
         if cli_value is None:
             continue
-        
+
         new_version_data[form_key] = kwargs[cli_key]
 
     # Read in manifest data, if given.
     if manifest_file is not None:
         manifest_data = read_manifest(manifest_file)
 
+        # If present, copy a manifest key to its relevant form key.
         for manifest_key, form_key in MANIFEST_KEY_TO_FORM_KEY_MAP.items():
             if form_key in new_version_data:
                 continue
+
+            manifest_value = manifest_data
+            for segment in manifest_key.split('.'):
+                manifest_value = manifest_value[segment]
 
             new_version_data[form_key] = manifest_data[manifest_key]
 
@@ -331,6 +338,21 @@ def fill_out_version_form(br, new_version_data: Dict):
             version_index=new_version_index
         )
         br[versioned_field_name] = field_value
+
+
+def get_item_from_path(container, path):
+    components = path.split('.')
+
+    value = container
+    for index, component in enumerate(components):
+        if isinstance(value, str):
+            partial_path = str.join('.', components[0:index])
+            raise ValueError(f"Unexpected string at {partial_path} (full path: {path})")
+        if isinstance(value, Sequence):
+            value = value[int(component)]
+        else:
+            value = value[component]
+    return value
 
 
 def read_manifest(file_path: str) -> Dict[Any, Any]:
