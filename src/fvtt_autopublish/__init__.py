@@ -337,7 +337,8 @@ def fill_out_version_form(br, new_version_data: Dict):
             field_name=field_name,
             version_index=new_version_index
         )
-        br[versioned_field_name] = field_value
+        # YAML/JSON fields may be numbers, however the form field only accepts strings.
+        br[versioned_field_name] = str(field_value)
 
 
 def get_item_from_path(container, path):
