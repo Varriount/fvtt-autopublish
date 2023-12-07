@@ -4,19 +4,17 @@ import json
 import os
 import re
 import sys
-from dataclasses import dataclass, field
-from enum import Enum
+from functools import partial
 from getpass import getpass
-from typing import Any, Dict, Optional, Mapping, Sequence
+from typing import Any, Dict, Optional, Sequence
 
 import click
-from click import Choice, Command, BadParameter
 import mechanize
+from click import Choice, Command, BadParameter
 from mechanize import FormNotFoundError, HTMLForm, Browser
 
 
-def stderr_print(*args, **kwargs):
-    print(*args, **kwargs, file=sys.stderr)
+stderr_print = partial(print, file=sys.stderr)
 
 
 # Constants
@@ -26,7 +24,7 @@ MAX_VERSION_COUNT = 1000
 ADMIN_URL = "foundryvtt.com"
 LOGIN_URL = f"https://{ADMIN_URL}"
 MODULE_URL_FMT = f"https://{ADMIN_URL}/packages/{{module_id}}/edit"
-LOGIN_COOKIE_NAME = 'sessionid'
+LOGIN_COOKIE_NAME = "sessionid"
 
 
 class LOGIN_FORM:
@@ -36,7 +34,7 @@ class LOGIN_FORM:
 
 
 class PACKAGE_FORM:
-    CLASS_VALUE = "package-description"
+    HTML_ID = "package-form"
 
     VERSION_KEY = "version"
     NOTES_KEY = "notes"
@@ -154,7 +152,10 @@ class ExtCommand(Command):
         |||
     """,
     required=True,
-    type=Choice(["environment", "input", "raw-input"], case_sensitive=False),
+    type=Choice(
+        ["environment", "input", "raw-input"],
+        case_sensitive=False,
+    ),
     default="input",
 )
 @click.option(
@@ -334,7 +335,7 @@ def main(
 
     # Select and fill out the "module versions" form.
     try:
-        browser.select_form(class_=lambda x: PACKAGE_FORM.CLASS_VALUE in x)
+        browser.select_form(id=PACKAGE_FORM.HTML_ID)
     except FormNotFoundError:
         stderr_print("Error encountered!")
         stderr_print("Debug information:")
@@ -349,14 +350,14 @@ def main(
     browser.submit()
 
 
-def fill_out_login_form(br, username: str, password: str):
-    br[LOGIN_FORM.USERNAME_KEY] = username
-    br[LOGIN_FORM.PASSWORD_KEY] = password
+def fill_out_login_form(browser, username: str, password: str):
+    browser[LOGIN_FORM.USERNAME_KEY] = username
+    browser[LOGIN_FORM.PASSWORD_KEY] = password
 
 
-def fill_out_version_form(br, new_version_data: Dict):
+def fill_out_version_form(browser, new_version_data: Dict):
     # Fill out the form fields with data describing the new version.
-    form: HTMLForm = br.form
+    form: HTMLForm = browser.form
     for field_name, field_value in new_version_data.items():
         # YAML/JSON fields may be numbers, however the form field only accepts strings.
         control = form.find_control(name=field_name)
@@ -404,7 +405,6 @@ def get_debug_browser_information(browser: Browser):
     yield "Current page URL", browser.geturl()
     yield "Current page title", browser.title()
     yield "Currently stored cookies", [cookie.name for cookie in browser.cookiejar]
-    yield "Login cookie is present", LOGIN_COOKIE_NAME in browser.cookiejar
     # yield "Page content", browser.response()
 
 
