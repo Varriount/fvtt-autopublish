@@ -343,11 +343,17 @@ def main(
             stderr_print(f"  {key}: {value}")
         stderr_print()
         stderr_print("Unable to find package configuration form.")
+        stderr_print(
+            "If you have just migrated from a version of AutoPublish from "
+            "BEFORE December 6th, 2023, you will need to update the environment "
+            "variable or parameter containing your module 'id' to be your "
+            "module 'name' instead."
+        )
         stderr_print(f"Are login credentials correct?")
         stderr_print(f"The current page URL should be {module_config_url}")
         return
     fill_out_version_form(browser, new_version_data)
-    browser.submit()
+    browser.submit(id="save")
 
 
 def fill_out_login_form(browser, username: str, password: str):
@@ -407,7 +413,7 @@ def get_debug_browser_information(browser: Browser):
     yield "Currently stored cookies", [cookie.name for cookie in browser.cookiejar]
 
     page_content = browser.response().read().decode("utf8")
-    page_content = re.sub(r"\n{2,}", "\n", page_content)
+    page_content = re.sub(r"\n{2,}", "\n  ", page_content)
     yield "Page content", page_content
 
 
