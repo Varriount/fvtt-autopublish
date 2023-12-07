@@ -405,7 +405,10 @@ def get_debug_browser_information(browser: Browser):
     yield "Current page URL", browser.geturl()
     yield "Current page title", browser.title()
     yield "Currently stored cookies", [cookie.name for cookie in browser.cookiejar]
-    # yield "Page content", browser.response()
+
+    page_content = browser.response().read().decode("utf8")
+    page_content = re.sub(r"\n{2,}", "\n", page_content)
+    yield "Page content", page_content
 
 
 # def get_debug_form_information(form: HTMLForm):
