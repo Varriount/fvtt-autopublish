@@ -29,8 +29,8 @@ LOGIN_COOKIE_NAME = "sessionid"
 
 class LOGIN_FORM:
     HTML_ID = "login-form"
-    USERNAME_KEY = "login_username"
-    PASSWORD_KEY = "login_password"
+    USERNAME_KEY = "username"
+    PASSWORD_KEY = "password"
 
 
 class PACKAGE_FORM:
